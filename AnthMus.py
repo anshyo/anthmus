@@ -6,11 +6,24 @@ from moviepy.editor import *
 import os
 import validators
 import shutil as secos
+import pathlib
 
 def convert(mp4, mp3):
     FILETOCONVERT = AudioFileClip(mp4)
     FILETOCONVERT.write_audiofile(mp3)
     FILETOCONVERT.close()
+
+def pathFind():
+    a = str(pathlib.Path(__file__))[::-1]
+    b = False
+    c = ""
+    for i in a:
+        if i == "\\":
+            b = True
+        if b:
+            c+=i 
+    return c[::-1]
+    
 
 def tubeSearch(name):
     o = {}
@@ -37,8 +50,9 @@ def spotifyName(spotify_link):
     
 if __name__ == "__main__":
     while True:
-        pathData = '\\data\\'
-        pathVideos = '\\videos\\'
+        pathData = pathFind()+'\\data\\'
+        pathVideos = pathFind()+'\\videos\\'
+        pathMusic = pathFind()+"\\musics\\"
         a = input("link/name of song/video: ")
         if a == "q":
             break
@@ -87,8 +101,7 @@ if __name__ == "__main__":
                     if int(u) == 2:
                         YouTube(y[p[int(z)]]).streams.get_audio_only().download(pathData)
         os.system("cls")
-
-    for i in os.listdir("\\data"):
-        convert(pathData+i,"\\musics\\"+i[0:-1]+"3")
+    for i in os.listdir(pathData):
+        convert(pathData+i,pathMusic+i[0:-1]+"3")
     secos.rmtree(pathData)
 input()
