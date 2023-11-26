@@ -8,24 +8,54 @@ import validators
 import shutil as secos
 
 def convert(mp4, mp3):
+    # Convert video file (mp4) to audio file (mp3) using MoviePy
     FILETOCONVERT = AudioFileClip(mp4)
     FILETOCONVERT.write_audiofile(mp3)
     FILETOCONVERT.close()
 
-def pathFind(): 
-    return None
-    
+def get_script_directory():
+    # Get the directory where the script is currently running
+    return os.getcwd()
 
-def tubeSearch(name):
+def create_directories():
+    # Create necessary directories for data, videos, and music
+    script_directory = get_script_directory()
+    path_data = os.path.join(script_directory, 'data')
+    path_videos = os.path.join(script_directory, 'videos')
+    path_music = os.path.join(script_directory, 'musics')
+
+    for path in [path_data, path_videos, path_music]:
+        os.makedirs(path, exist_ok=True)
+
+    return path_data, path_videos, path_music
+
+def path_find():
+    # Find the absolute path of the script
+    a = os.path.abspath(__file__)[::-1]
+    b = False
+    c = ""
+    for i in a:
+        if i == "\\":
+            b = True
+        if b:
+            c += i
+    d = str(c[::-1])
+    if "dist" in d:
+        d = d[:-5]
+    return d
+
+def tube_search(name):
+    # Search for videos on YouTube using the youtubesearchpython library
     o = {}
     for i in VideosSearch(name).result()["result"]:
-        if len(o)==5:
+        if len(o) == 5:
             break
         else:
             o[i["title"]] = i["link"]
     return o
 
-def spotifyName(spotify_link):
+def spotify_name(spotify_link):
+    # Extract the song name from a Spotify link using web scraping
     response = requests.get(spotify_link)
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -38,14 +68,14 @@ def spotifyName(spotify_link):
     else:
         print(f'Error: {response.status_code}')
         return None
-    
+
 if __name__ == "__main__":
+    # Create directories for data, videos, and music
+    path_data, path_videos, path_music = create_directories()
+
     while True:
-        pathData = pathFind()+'\\data\\'
-        pathVideos = pathFind()+'\\videos\\'
-        pathMusic = pathFind()+"\\musics\\"
         a = input("link/name of song/video: ")
-        if a == "q":
+        if a.lower() == "q":
             break
         else:
             b = a
@@ -56,43 +86,53 @@ if __name__ == "__main__":
                 k = int(input("videos/audio[1/2]: "))
                 try:
                     if k == 1:
-                        YouTube(a).streams.get_highest_resolution().download(pathVideos)
+                        # Download the highest resolution video
+                        YouTube(a).streams.get_highest_resolution().download(path_videos)
                     if k == 2:
-                        YouTube(a).streams.get_audio_only().download(pathData)
-                except:
+                        # Download audio only
+                        YouTube(a).streams.get_audio_only().download(path_data)
+                except Exception as e:
+                    print(f"Error downloading: {e}")
                     pass
+
                 try:
                     l = None
+                    # Attempt to find a Spotify link and download from there
                     for i in range(3):
-                        s = VideosSearch(spotifyName(a)).result()['result'][i]['link']
+                        s = VideosSearch(spotify_name(a)).result()['result'][i]['link']
                         if "https:" in s:
                             l = s
                             break
                         else:
                             continue
                     if k == 1:
-                        YouTube(l).streams.get_highest_resolution().download(pathVideos)
+                        # Download the highest resolution video from Spotify
+                        YouTube(l).streams.get_highest_resolution().download(path_videos)
                     if k == 2:
-                        YouTube(l).streams.get_audio_only().download(pathData)
-                except:
+                        # Download audio only from Spotify
+                        YouTube(l).streams.get_audio_only().download(path_data)
+                except Exception as e:
+                    print(f"Error downloading from Spotify: {e}")
                     pass
-                
-                    
             else:
-                p , x , y = {} , 0 , tubeSearch(a)
+                p, x, y = {}, 0, tube_search(a)
                 for i in y.keys():
                     x += 1
                     p[x] = i
-                    print(str(x)+". "+i)
+                    print(str(x) + ". " + i)
                 z = input("1-5: ")
-                if int(z) >= 1 and int(z) <=5:
+                if int(z) >= 1 and int(z) <= 5:
                     u = input("video/audio[1/2]: ")
                     if int(u) == 1:
-                        YouTube(y[p[int(z)]]).streams.get_highest_resolution().download(pathVideos)
+                        # Download the highest resolution video from the search results
+                        YouTube(y[p[int(z)]]).streams.get_highest_resolution().download(path_videos)
                     if int(u) == 2:
-                        YouTube(y[p[int(z)]]).streams.get_audio_only().download(pathData)
-        os.system("cls")
-    for i in os.listdir(pathData):
-        convert(pathData+i,pathMusic+i[0:-1]+"3")
-    secos.rmtree(pathData)
+                        # Download audio only from the search results
+                        YouTube(y[p[int(z)]]).streams.get_audio_only().download(path_data)
+
+    # Convert downloaded audio files to MP3 and remove the temporary data directory
+    for i in os.listdir(path_data):
+        convert(os.path.join(path_data, i), os.path.join(path_music, i[0:-1] + "3"))
+    secos.rmtree(path_data)
+
 input()
