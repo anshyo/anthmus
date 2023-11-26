@@ -6,23 +6,14 @@ from moviepy.editor import *
 import os
 import validators
 import shutil as secos
-import pathlib
 
 def convert(mp4, mp3):
     FILETOCONVERT = AudioFileClip(mp4)
     FILETOCONVERT.write_audiofile(mp3)
     FILETOCONVERT.close()
 
-def pathFind():
-    a = str(pathlib.Path(__file__))[::-1]
-    b = False
-    c = ""
-    for i in a:
-        if i == "\\":
-            b = True
-        if b:
-            c+=i 
-    return c[::-1]
+def pathFind(): 
+    return None
     
 
 def tubeSearch(name):
