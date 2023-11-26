@@ -44,10 +44,6 @@ Follow these steps to run AnthMus:
 
 If you close the console window without typing "q," AnthMus may not work as expected. Always use the "q" command to properly exit the program.
 
-## Author
-
-- Your Name
-
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
