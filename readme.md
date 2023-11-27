@@ -10,18 +10,29 @@ AnthMus allows you to easily download your favorite songs or audio from YouTube.
 
 Follow these steps to get AnthMus up and running on your Windows machine.
 
+## Dependencies
+
+- [pytube](https://python-pytube.readthedocs.io/en/latest/)
+- [requests](https://docs.python-requests.org/en/master/)
+- [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/)
+- [youtubesearchpython](https://github.com/alexmercerind/youtube-search-python)
+- [moviepy](https://zulko.github.io/moviepy/)
+- [validators](https://validators.readthedocs.io/en/latest/)
+- [shutil](https://docs.python.org/3/library/shutil.html)
+
+
 ### Prerequisites
 
 - [Python](https://www.python.org/) installed on your machine.
 - An active internet connection.
 
-### Installation
+## Installation
 
-1. Download AnthMus by clicking on the "Code" button on the [main repository page](https://github.com/yourusername/AnthMus) and selecting "Download ZIP."
+1. **Download AnthMus:**
+   - Go to the [Releases page](https://github.com/anshyo/anthmus/releases/tag/v1.0.0) on GitHub.
 
-2. Extract the downloaded ZIP file to a location on your computer.
-
-3. Open the extracted folder.
+2. **Choose a Release:**
+   - Select the latest release, and download it in your system and extract it.
 
 ### Usage
 
@@ -43,6 +54,10 @@ Follow these steps to run AnthMus:
 ## Disclaimer
 
 If you close the console window without typing "q," AnthMus may not work as expected. Always use the "q" command to properly exit the program.
+
+## Contribution
+
+Contributions are welcome! Please open an issue or submit a pull request.
 
 ## License
 
