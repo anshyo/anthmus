@@ -33,7 +33,7 @@ Follow these steps to run AnthMus:
 
 3. AnthMus will open a console window and prompt you to enter the link or name of a song or video. Follow the on-screen instructions to download content from YouTube.
 
-4. To exit the program, enter "q" when prompted for the link or name. If you close the console window without typing "q," AnthMus may not work as expected.
+4. To exit the program, enter "q" when prompted for the link or name. If, for some reason, you weren't able to type "q" and exit the program, simply open the program again and exit with "q."
 
 ### Notes
 
