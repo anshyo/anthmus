@@ -69,8 +69,8 @@ def spotify_name(spotify_link):
         print(f'Error: {response.status_code}')
         return None
 
-if __name__ == "__main__":
-    # Create directories for data, videos, and music
+def main():
+        # Create directories for data, videos, and music
     path_data, path_videos, path_music = create_directories()
 
     while True:
@@ -135,4 +135,6 @@ if __name__ == "__main__":
         convert(os.path.join(path_data, i), os.path.join(path_music, i[0:-1] + "3"))
     secos.rmtree(path_data)
 
-input()
+
+if __name__ == "__main__":
+    main()
