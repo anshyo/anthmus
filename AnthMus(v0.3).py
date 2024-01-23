@@ -7,6 +7,7 @@ import os
 import validators
 import shutil as secos
 
+
 def convert(mp4, mp3):
     # Convert video file (mp4) to audio file (mp3) using MoviePy
     FILETOCONVERT = AudioFileClip(mp4)
@@ -28,6 +29,9 @@ def create_directories():
         os.makedirs(path, exist_ok=True)
 
     return path_data, path_videos, path_music
+
+# directories are just created
+path_data, path_videos, path_music = create_directories()
 
 def path_find():
     # Find the absolute path of the script
@@ -69,12 +73,26 @@ def spotify_name(spotify_link):
         print(f'Error: {response.status_code}')
         return None
 
+def resolution(link):
+    while True:
+        ask = input('Select the resolution ("720p", "480p", "360p", "240p", "144p"): ')
+        try:
+            if ask == "144p" or ask == "240p" or ask == "360p" or ask == "480p" or ask == "720p":
+                YouTube(link).streams.get_by_resolution(ask).download(path_videos)
+                print(f"Video downloaded in {ask} resolution.")
+                break
+            else:
+                print("Invalid resolution. Please choose a valid resolution.")
+        except:
+            print("Resolution not available")
+
+
 def main():
-        # Create directories for data, videos, and music
-    path_data, path_videos, path_music = create_directories()
 
     while True:
-        a = input("link/name of song/video: ")
+        a = input("link/name of song/video('q' to quit): ")
+        if a == "n":
+            continue
         if a.lower() == "q":
             break
         else:
@@ -87,7 +105,7 @@ def main():
                 try:
                     if k == 1:
                         # Download the highest resolution video
-                        YouTube(a).streams.get_highest_resolution().download(path_videos)
+                        resolution(a)
                     if k == 2:
                         # Download audio only
                         YouTube(a).streams.get_audio_only().download(path_data)
@@ -107,7 +125,7 @@ def main():
                             continue
                     if k == 1:
                         # Download the highest resolution video from Spotify
-                        YouTube(l).streams.get_highest_resolution().download(path_videos)
+                        resolution(l)
                     if k == 2:
                         # Download audio only from Spotify
                         YouTube(l).streams.get_audio_only().download(path_data)
@@ -120,12 +138,14 @@ def main():
                     x += 1
                     p[x] = i
                     print(str(x) + ". " + i)
-                z = input("1-5: ")
+                z = input("1-5('n' to cancel): ")
+                if z == "n":
+                    continue
                 if int(z) >= 1 and int(z) <= 5:
                     u = input("video/audio[1/2]: ")
                     if int(u) == 1:
                         # Download the highest resolution video from the search results
-                        YouTube(y[p[int(z)]]).streams.get_highest_resolution().download(path_videos)
+                        resolution(y[p[int(z)]])
                     if int(u) == 2:
                         # Download audio only from the search results
                         YouTube(y[p[int(z)]]).streams.get_audio_only().download(path_data)
