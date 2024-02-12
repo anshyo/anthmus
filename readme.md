@@ -1,6 +1,8 @@
 # AnthMus
 
-AnthMus is a simple command-line utility for downloading and converting audio from YouTube videos.
+AnthMus is a simple command-line utility for downloading and converting audio from YouTube videos. It now includes additional features for downloading playlists from Spotify and selecting resolutions for YouTube downloads.
+
+Make your Spotify offline experience thrifty by stepping up with AnthMus! The cost-effective way to listen to your favorite songs or podcasts wherever you enjoy. With AnthMus, you can download songs and videos directly from popular streaming platforms YouTube and Spotify.
 
 ## Overview
 
@@ -20,7 +22,6 @@ Follow these steps to get AnthMus up and running on your Windows machine.
 - [validators](https://validators.readthedocs.io/en/latest/)
 - [shutil](https://docs.python.org/3/library/shutil.html)
 
-
 ### Prerequisites
 
 - [Python](https://www.python.org/) installed on your machine.
@@ -31,20 +32,20 @@ Follow these steps to get AnthMus up and running on your Windows machine.
 1. **Download AnthMus:**
    - Go to the [Releases page](https://github.com/anshyo/anthmus/releases/tag/v1.0.0) on GitHub.
 
-2. **Choose a Release:**
-   - Select the latest release, and download it in your system and extract it.
+2. **Have a nice day**
+   - Select the latest release and download it to your system. and Run....
 
 ### Usage
 
-Follow these steps to run AnthMus:
+Just type "h" for help....
 
-1. Locate the `dist` folder within the extracted project folder.
+### New Features
 
-2. Inside the `dist` folder, find and run the executable file (`AnthMus.exe`).
+- **Spotify Playlist Downloading:**
+  - AnthMus now supports downloading playlists from Spotify in one click. Simply provide the playlist URL, and AnthMus will download all the songs in the playlist.
 
-3. AnthMus will open a console window and prompt you to enter the link or name of a song or video. Follow the on-screen instructions to download content from YouTube.
-
-4. To exit the program, enter "q" when prompted for the link or name. If, for some reason, you weren't able to type "q" and exit the program, simply open the program again and exit with "q."
+- **YouTube Resolution Selection:**
+  - You can now select resolutions for YouTube downloads. When prompted, choose from available resolutions ("720p", "480p", "360p", "240p", "144p") for your downloads.
 
 ### Notes
 
