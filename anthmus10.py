@@ -129,7 +129,7 @@ def spotify_name(spotify_link):
             singer_name = None
 
         return song_name+"  "+singer_name
-
+    
     else:
         print(f'Error: {response.status_code}')
         return None
@@ -190,9 +190,9 @@ def get_spotify_playlist_musics_name(spotify_playlist_url):
                 song_names.append(str(spotify_name(i)))
             
             y = 0 
+            print("Songs in the playlist: ")
             for i in song_names:
                 y += 1
-                print("Songs in the playlist: ")
                 print(f"{y}. {i}")
             return(song_names)
             
