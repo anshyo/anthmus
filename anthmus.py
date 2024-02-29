@@ -9,6 +9,16 @@ import shutil as secos
 
 playlist_title = ''
 
+def removeEmptyFolders():
+    root = get_script_directory()
+    folders = list(os.walk(root))[1:]
+
+    for folder in folders:
+        # folder example: ('FOLDER/3', [], ['file'])
+        if "git" not in str(folder):
+            if not folder[2]:
+                os.rmdir(folder[0])
+
 def convert(mp4, mp3):
     """
     Convert video file (mp4) to audio file (mp3) using MoviePy.
@@ -47,8 +57,20 @@ def create_directories():
     path_playlist_data = os.path.join(script_directory, f'playlist_data {playlist_title}')
     path_playlist_music = os.path.join(script_directory, f'playlist_music {playlist_title}')
 
-    for path in [path_data, path_videos, path_music, path_playlist_data, path_playlist_music]:
-        os.makedirs(path, exist_ok=True)
+    os.makedirs(path_data, exist_ok=True)
+    os.makedirs(path_videos, exist_ok=True)
+    os.makedirs(path_music, exist_ok=True)
+    try:
+        os.makedirs(path_playlist_data, exist_ok=True)
+    except:
+        path_playlist_data = os.path.join(script_directory, f'not supported playlist data name')
+        os.makedirs(path_playlist_data, exist_ok=True)
+    try:
+        os.makedirs(path_playlist_music, exist_ok=True)
+    except:
+        path_playlist_music = os.path.join(script_directory, f'not supported playlist music name')
+        os.makedirs(path_playlist_music, exist_ok=True)
+        
 
     return path_data, path_videos, path_music, path_playlist_data, path_playlist_music
 
@@ -267,8 +289,8 @@ def youtube_download_audio_name(name):
     a = tube_search(name)
     b = 0
     for i in a.keys():
-        print(f"{b}. {i}")
         b += 1
+        print(f"{b}. {i}")
     ask = input("1-10['c' to cancel]: ")
     if 0 < ask > 11 :
         c = 0
@@ -437,3 +459,4 @@ if __name__ == "__main__":
     for i in os.listdir(path_data):
         convert(os.path.join(path_data, i), os.path.join(path_music, i[0:-1] + "3"))
     secos.rmtree(path_data)
+    removeEmptyFolders()
