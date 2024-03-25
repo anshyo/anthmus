@@ -14,43 +14,22 @@ def removeEmptyFolders():
     folders = list(os.walk(root))[1:]
 
     for folder in folders:
-        # folder example: ('FOLDER/3', [], ['file'])
         if "git" not in str(folder):
             if not folder[2]:
                 os.rmdir(folder[0])
 
 def convert(mp4, mp3):
-    """
-    Convert video file (mp4) to audio file (mp3) using MoviePy.
-
-    Args:
-        mp4 (str): Path to the input video file.
-        mp3 (str): Path to save the output audio file.
-    """
-    # Convert video file (mp4) to audio file (mp3) using MoviePy
     FILETOCONVERT = AudioFileClip(mp4)
     FILETOCONVERT.write_audiofile(mp3)
     FILETOCONVERT.close()
 
 def get_script_directory():
-    """
-    Get the directory where the script is currently running.
-
-    Returns:
-        str: The current working directory.
-    """
     return os.getcwd()
 
 def create_directories():
-    """
-    Create necessary directories for data, videos, and music.
-
-    Returns:
-        tuple: Paths to data, videos, music, playlist data, and playlist music directories.
-    """
     global path_data, path_videos, path_music, path_playlist_data, path_playlist_music
-    # Create necessary directories for data, videos, and music
-    script_directory = get_script_directory()
+    download_directory = os.path.expanduser(r"~\Downloads")
+    script_directory = os.path.join(download_directory,"Anthmus Downloads")
     path_data = os.path.join(script_directory, 'data')
     path_videos = os.path.join(script_directory, 'videos')
     path_music = os.path.join(script_directory, 'musics')
@@ -71,19 +50,11 @@ def create_directories():
         path_playlist_music = os.path.join(script_directory, f'not supported playlist music name')
         os.makedirs(path_playlist_music, exist_ok=True)
         
-
     return path_data, path_videos, path_music, path_playlist_data, path_playlist_music
 
 path_data, path_videos, path_music, path_playlist_data, path_playlist_music = create_directories()
 
 def path_find():
-    """
-    Find the absolute path of the script.
-
-    Returns:
-        str: The absolute path of the script.
-    """
-    # Find the absolute path of the script
     a = os.path.abspath(__file__)[::-1]
     b = False
     c = ""
@@ -98,43 +69,27 @@ def path_find():
     return d
 
 def tube_search(name):
-    """
-    Search for videos on YouTube using the youtubesearchpython library.
-
-    Args:
-        name (str): The search query.
-
-    Returns:
-        dict: A dictionary containing video titles as keys and their corresponding links as values.
-    """
     try:
         o = {}
-        for i in VideosSearch(name).result()["result"]:
-            if len(o) == 10:
-                break
-            else:
-                x = i["title"]+f"   ({i["duration"]} , {i["publishedTime"]})"
-                o[x] = i["link"]
+        try:
+            for i in VideosSearch(name).result()["result"]:
+                if len(o) == 10:
+                    break
+                else:
+                    x = i["title"]+f"   ({i["duration"]} , {i["publishedTime"]})"
+                    o[x] = i["link"]
+        except:
+            print("you are not connected.. try again later")
         return o
     except ConnectionError:
         print("Connection error try again later")
 
 def spotify_name(spotify_link):
-    """
-    Extract the song name from a Spotify link using web scraping.
-
-    Args:
-        spotify_link (str): The Spotify link.
-
-    Returns:
-        str: The name of the song.
-    """
     response = requests.get(spotify_link)
     
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Extract song name
         song_name_element = soup.find('meta', property='og:title')
         if song_name_element:
             song_name = song_name_element['content']
@@ -142,7 +97,6 @@ def spotify_name(spotify_link):
             print('Song name not found on the page.')
             return None
 
-        # Extract singer information
         singer_element = soup.find('meta', property='og:description')
         if singer_element:
             singer_name = singer_element['content'].split(' - ')[-1]
@@ -150,22 +104,13 @@ def spotify_name(spotify_link):
             print('Singer information not found on the page.')
             singer_name = None
 
-        return song_name+"  "+singer_name
+        return song_name+"  "+singer_name+" spotify version"
     
     else:
         print(f'Error: {response.status_code}')
         return None
     
 def resolution(link):
-    """
-    Prompt the user to select the resolution for downloading a video.
-
-    Args:
-        link (str): The YouTube video link.
-
-    Returns:
-        bool: True if resolution selection was successful, False otherwise.
-    """
     while True:
         ask = input('Select the resolution ("720p", "480p", "360p", "240p", "144p"): ')
         try:
@@ -183,17 +128,11 @@ def resolution(link):
             return False
 
 def get_spotify_playlist_musics_name(spotify_playlist_url):
-    """
-    Extract playlist information from Spotify webpage.
-
-    Args:
-        spotify_playlist_url (str): The Spotify playlist URL.
-
-    Returns:
-        list: List of song names in the playlist.
-    """
     global playlist_title
-    response = requests.get(spotify_playlist_url)
+    try:
+        response = requests.get(spotify_playlist_url)
+    except ConnectionError:
+        print("you are not connected.. please try again later")
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
         playlist_title_element = soup.find('meta', property='og:title')
@@ -201,7 +140,6 @@ def get_spotify_playlist_musics_name(spotify_playlist_url):
             playlist_title = playlist_title_element['content']
             print(f"Playlist Title: {playlist_title}")
 
-            # Find all song names and artists
             song_meta_tags = soup.find_all('meta', attrs={"name" : "music:song"})
             song_links = []
             for meta_tag in song_meta_tags:
@@ -224,46 +162,22 @@ def get_spotify_playlist_musics_name(spotify_playlist_url):
         print(f'Error: {response.status_code}')
 
 def youtube_downloader_video_link(link):
-    """
-    Download a video from a YouTube link.
-
-    Args:
-        link (str): The YouTube video link.
-    """
     while True:
         a = resolution(link) 
         if a:
             break
         
 def youtube_downloader_audio_link_playlist(link):
-    """
-    Download audio from a YouTube video link and save it to the playlist data directory.
-
-    Args:
-        link (str): The YouTube video link.
-    """
     print(f"({YouTube(link).title})downloading in progress....")
     YouTube(link).streams.get_audio_only().download(path_playlist_data)
     print("done...")
 
 def youtube_downloader_audio_link(link):
-    """
-    Download audio from a YouTube video link and save it to the data directory.
-
-    Args:
-        link (str): The YouTube video link.
-    """
     print(f"({YouTube(link).title})downloading in progress....")
     YouTube(link).streams.get_audio_only().download(path_data)
     print("done...")
 
 def youtube_download_video_name(name):
-    """
-    Download a video from YouTube based on the given search query.
-
-    Args:
-        name (str): The search query.
-    """
     a = tube_search(name)
     b = 0
     for i in a.keys():
@@ -271,47 +185,40 @@ def youtube_download_video_name(name):
         print(f"{b}. {i}")
 
     ask = input("1-10: ")
-    if 0 < int(ask) < 11 :
-        c = 0
+    if ask == "c":
+        print("task is cancelled")
+        main()
+    elif 0 < int(ask.strip()) < 11 :
+        c = 1
         for i in a.keys():
-            c += 1
             if c == int(ask):
                 youtube_downloader_video_link(a[i])
                 break
+            c += 1
+    else:
+        print("invalid input")
 
 def youtube_download_audio_name(name):
-    """
-    Download audio from YouTube based on the given search query.
-
-    Args:
-        name (str): The search query.
-    """
     a = tube_search(name)
     b = 0
     for i in a.keys():
         b += 1
         print(f"{b}. {i}")
     ask = input("1-10['c' to cancel]: ")
-    if 0 < ask > 11 :
-        c = 0
-        for i in a.keys():
-            if c == ask:
-                youtube_downloader_audio_link(a[i])
-                break
-            c += 1
     if ask == "c":
         print("task is cancelled")
         main()
+    elif 0 < int(ask.strip()) < 11 :
+        c = 1
+        for i in a.keys():
+            if c == int(ask):
+                youtube_downloader_audio_link(a[i])
+                break
+            c += 1
     else:
         print("invalid input")
 
 def youtube_download_audio_name_playlist(name):
-    """
-    Download audio from YouTube based on the given search query and save it to the playlist data directory.
-
-    Args:
-        name (str): The search query.
-    """
     a = tube_search(name)
     b = 0
     for i in a.values():
@@ -322,12 +229,6 @@ def youtube_download_audio_name_playlist(name):
         b += 1
 
 def youtube_download_audio_name_1st(name):
-    """
-    Download audio from YouTube based on the given search query and save it to the data directory.
-
-    Args:
-        name (str): The search query.
-    """
     a = tube_search(name)
     b = 0
     for i in a.values():
@@ -338,15 +239,6 @@ def youtube_download_audio_name_1st(name):
         b += 1
 
 def check_link(link):
-    """
-    Check the validity of a URL.
-
-    Args:
-        link (str): The URL to check.
-
-    Returns:
-        bool: True if the URL is valid, False otherwise.
-    """
     a = True
     l = str(link)
     if "http" or "https" in l[0:10]:
@@ -360,27 +252,19 @@ def check_link(link):
     return a
         
 def spotify_playlist_download(link):
-    """
-    Download songs from a Spotify playlist.
-
-    Args:
-        link (str): The Spotify playlist link.
-    """
     a = get_spotify_playlist_musics_name(link)
     path_data, path_videos, path_music, path_playlist_data, path_playlist_music = create_directories()
-
-    for i in a:
-        youtube_download_audio_name_playlist(i)
+    try:
+        for i in a:
+            youtube_download_audio_name_playlist(i)
+    except TypeError:
+        main()
     
     for i in os.listdir(path_playlist_data):
         convert(os.path.join(path_playlist_data, i), os.path.join(path_playlist_music, i[0:-1] + "3"))
     secos.rmtree(path_playlist_data)
 
 def main():
-    """
-    Main function to run the script.
-    """
-    print("'q' for quit | 'h' for help")
     while True:
         ask = input("Task: ")
 
@@ -402,7 +286,6 @@ you can enter "q" to cancel any operation
 
         elif ask == "yt":
             while True:
-                os.system("cls")
                 linkname = input("yt: ")
                 opt = input("audio/video[1/2]: ")
                 if check_link(linkname):
@@ -425,9 +308,8 @@ you can enter "q" to cancel any operation
                         print("invalid input")
 
         elif ask == "sp":
-            print("links only.....")
             while True:
-                os.system("cls")
+                print("links only.....")
                 while True:
                     a = input("playlist/song[1/2]: ")
                     if a == "1" or  a == "2":
@@ -441,7 +323,7 @@ you can enter "q" to cancel any operation
                     if validators.url(link):
                         break
                     elif link == "q":
-                        break
+                        main()
                     else:
                         print("invalid input!")
                 if a == "1":
@@ -452,11 +334,15 @@ you can enter "q" to cancel any operation
                     break
                 else:
                     print("invalid input!")
-                    
+        else:
+            print("Invalid inpute")
 if __name__ == "__main__":
+    print("'q' for quit | 'h' for help | all the files will be stored in the downloads folder of your system")
     main()
     path_data, path_videos, path_music, path_playlist_data, path_playlist_music = create_directories()
     for i in os.listdir(path_data):
         convert(os.path.join(path_data, i), os.path.join(path_music, i[0:-1] + "3"))
     secos.rmtree(path_data)
     removeEmptyFolders()
+
+       
